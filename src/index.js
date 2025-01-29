@@ -1,6 +1,8 @@
 import { attr } from './utilities';
 import { hoverActive } from './interactions/hover-active';
 import { scrollIn } from './interactions/scroll-in';
+import { load } from './interactions/load';
+import { cursor } from './interactions/cursor';
 
 document.addEventListener('DOMContentLoaded', function () {
   // Comment out for production
@@ -14,7 +16,57 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   //////////////////////////////
-  //Global Variables
+  //Custom Functions
+
+  // Header Image Animation
+  function headerScroll() {
+    const triggerElement = $('.header_background-image-wrapper');
+    const targetElement = $('.header_background-image');
+    if (!targetElement || !triggerElement) {
+      return;
+    }
+    let tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: triggerElement,
+        start: 'top top',
+        end: 'bottom top',
+        ease: 'none',
+        scrub: 1,
+      },
+      defaults: {
+        // children inherit these defaults
+        duration: 1,
+        ease: 'none',
+      },
+    });
+    tl.to(targetElement, {
+      scale: 1.5,
+    });
+  }
+
+  function navFill() {
+    const pageWrap = document.querySelector('.pager-wrapper');
+    const navFill = document.querySelector('.navbar_fill');
+    if (!pageWrap || !navFill) return;
+    // Nav Bar Fill Animation
+    let tlNav = gsap.timeline({
+      scrollTrigger: {
+        trigger: pageWrap,
+        start: 'top top',
+        end: 'top -100px',
+        ease: 'none',
+        scrub: 1,
+      },
+      defaults: {
+        // children inherit these defaults
+        duration: 1,
+        ease: 'none',
+      },
+    });
+    tlNav.from(navFill, {
+      opacity: 0,
+    });
+  }
 
   //////////////////////////////
   //Control Functions on page load
@@ -31,7 +83,12 @@ document.addEventListener('DOMContentLoaded', function () {
       (gsapContext) => {
         let { isMobile, isTablet, isDesktop, reduceMotion } = gsapContext.conditions;
         //functional interactions
-        hoverActive(gsapContext);
+        load(gsapContext);
+        scrollIn(gsapContext);
+        cursor(gsapContext);
+        // hoverActive(gsapContext);
+        headerScroll();
+        navFill();
         //conditional interactions
         if (!reduceMotion) {
           scrollIn(gsapContext);
